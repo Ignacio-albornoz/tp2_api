@@ -1,20 +1,18 @@
-package com.neoris.turnosrotativos.entities;
+package com.neoris.turnosrotativos.dtos;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import com.neoris.turnosrotativos.entities.Concepto;
+import org.springframework.stereotype.Component;
+
 import javax.persistence.Id;
 
-@Entity(name = "conceptos")
-public class Concepto {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+@Component
+public class ConceptoDTO {
     private Integer id;
     private String nombre;
+    private Boolean laborable;
     private Integer hsMinimo;
     private Integer hsMaximo;
-    private Boolean laborable;
+
 
     public Integer getId() {
         return id;
