@@ -1,6 +1,7 @@
 package com.neoris.turnosrotativos.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -25,7 +26,9 @@ public class Empleado {
     @NotNull(message = "nombre es obligatorio.")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Solo se permiten letras en el campo nombre")
     String nombre;
+
     @NotNull(message = "apellido es obligatorio.")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Solo se permiten letras en el campo apellido")
     String apellido;
 
     @NotNull(message = "email es obligatorio.")
@@ -33,7 +36,6 @@ public class Empleado {
     @Column(unique = true)
     String email;
 
-    //@JsonFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "fechaNacimiento es obligatorio.")
     @PastOrPresent(message = "La fecha de nacimiento no puede ser posterior al día de la fecha.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

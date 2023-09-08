@@ -6,11 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,28 +23,55 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("timestamp", new Date());
-        responseBody.put("status", status.value());
+        responseBody.put("Status Code", status.value());
 
-        List<String> errors = ex.getBindingResult().getFieldErrors()
+        List<String> menssageErrors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        responseBody.put("errors", errors);
+        responseBody.put("Mensaje", menssageErrors);
 
         return new ResponseEntity<>(responseBody, headers, status);
     }
 
     @ExceptionHandler(BussinessException.class)
-    public ResponseEntity<Object> handleValueAlreadyExistsException(
-            BussinessException ex, WebRequest request
+    public ResponseEntity<Object> handleBussinessException(
+            BussinessException ex
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("timestamp", new Date());
-        responseBody.put("message", ex.getMessage());
+        switch (ex.getStatus()){
+            case 409:
+                responseBody.put("Status Code", ex.getStatus());
+                responseBody.put("Mensaje", ex.getMessage());
+                return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
+            case 400:
+                responseBody.put("Status Code", ex.getStatus());
+                responseBody.put("Mensaje", ex.getMessage());
+                return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
+            case 404:
+                responseBody.put("Status Code", ex.getStatus());
+                responseBody.put("Mensaje", ex.getMessage());
+                return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+
+            default:
+                responseBody.put("Status Code", 500);
+                responseBody.put("Mensaje", "Ocurrio un error inesperado.");
+                return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+
+
+        }
+
     }
+
+    @ExceptionHandler(CustomBadRequestException.class)
+    public ResponseEntity<Object> handleBadRequestException(CustomBadRequestException ex) {
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("Status Code", 400);
+        responseBody.put("Mensaje", ex.getMessage());
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

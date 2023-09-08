@@ -5,9 +5,7 @@ import com.neoris.turnosrotativos.exceptions.BussinessException;
 import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
 import com.neoris.turnosrotativos.services.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -27,7 +25,7 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         if (empleado.isPresent()){
             return empleado.get();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontro el empleado con id: " + empleado.get().getId());
+            throw new BussinessException("No se encontro el empleado con id: " + id, 404);
         }
     }
 
@@ -66,16 +64,17 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         Optional<Empleado> empleadoOptionalfindByNroDocumento = empleadoRepository.findByNroDocumento(empleado.getNroDocumento());
 
         if (empleadoOptionalfindByEmail.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el email ingresado");
+            throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
         }
 
         if (empleadoOptionalfindByNroDocumento.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el documento ingresado");
+            throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
         }
 
-        //Valida si el empleado es mayor a 18 años, a travez de un metodo void, que devolvera una excepcion en el caso de no serlo.
-        validarEdad(empleado.getFechaNacimiento());
-
+        //esMayorDeEdad == false, se dispara un Bad request
+        if (!esMayorDeEdad(empleado.getFechaNacimiento())){
+            throw new BussinessException("La edad del empleado no puede ser menor a 18 años.", 400);
+        }
 
 
         Empleado empleadoAdded = empleadoRepository.save(empleado);
@@ -93,15 +92,17 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         Optional<Empleado> empleadoOptionalfindByNroDocumento = empleadoRepository.findByNroDocumento(empleado.getNroDocumento());
 
         if (empleadoOptionalfindByEmail.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el email ingresado");
+            throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
         }
 
         if (empleadoOptionalfindByNroDocumento.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el documento ingresado");
+            throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
         }
 
-        //Valida si el empleado es mayor a 18 años, a travez de un metodo void, que devolvera una excepcion en el caso de no serlo.
-        validarEdad(empleado.getFechaNacimiento());
+        //esMayorDeEdad == false, se dispara un Bad request
+        if (!esMayorDeEdad(empleado.getFechaNacimiento())){
+            throw new BussinessException("La edad del empleado no puede ser menor a 18 años.", 400);
+        }
 
         if (empleadoOptionalFindById.isPresent()){
 
@@ -109,7 +110,7 @@ public class EmpleadoServiceImplement implements EmpleadoService {
             return empleadoAdded;
         }
 
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontro el empleado con id: " + id);
+        throw new BussinessException("No se encontro el empleado con id: " + id, 404);
 
 
     }
@@ -123,17 +124,18 @@ public class EmpleadoServiceImplement implements EmpleadoService {
             return;
         }
 
-        throw new BussinessException("Empleado no encontrado");
+        throw new BussinessException("Empleado no encontrado", 404);
     }
 
     /* VALIDACIONES */
 
-    private void validarEdad (LocalDate fechaNacimiento) {
+    private boolean esMayorDeEdad (LocalDate fechaNacimiento) {
         LocalDate fechaActual = LocalDate.now();
         int edad = Period.between(fechaNacimiento, fechaActual).getYears();
         if (edad < 18) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La edad del empleado no puede ser menor a 18 años.");
+            return false;
         }
+        return true;
     }
 
 }

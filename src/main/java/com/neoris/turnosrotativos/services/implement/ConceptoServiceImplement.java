@@ -25,7 +25,7 @@ public class ConceptoServiceImplement implements ConceptoService {
         if (concepto.isPresent()){
             return concepto.get();
         } else {
-            throw new BussinessException("El concepto con id: " + id + " no existe.");
+            throw new BussinessException("El concepto con id: " + id + " no existe.", 404);
 
         }
     }
