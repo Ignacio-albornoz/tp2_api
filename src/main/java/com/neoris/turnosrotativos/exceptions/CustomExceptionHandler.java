@@ -65,13 +65,4 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    @ExceptionHandler(CustomBadRequestException.class)
-    public ResponseEntity<Object> handleBadRequestException(CustomBadRequestException ex) {
-        Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("Status Code", 400);
-        responseBody.put("Mensaje", ex.getMessage());
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
-    }
-
-
 }
