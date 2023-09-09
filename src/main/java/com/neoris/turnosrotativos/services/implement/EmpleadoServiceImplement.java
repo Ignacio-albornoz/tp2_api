@@ -138,4 +138,36 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         return true;
     }
 
+    public boolean checkEmpleadoById(Integer id){
+        Optional<Empleado> optionalEmpleado = empleadoRepository.findById(id);
+
+        if (optionalEmpleado.isPresent()){
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean checkEmpleadoByNroDocumento(Integer nroDocumento){
+        Optional<Empleado> optionalEmpleado = empleadoRepository.findByNroDocumento(nroDocumento);
+
+        if (optionalEmpleado.isPresent()){
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean checkEmpleadoByEmail(String email){
+        Optional<Empleado> optionalEmpleado = empleadoRepository.findByEmail(email);
+
+        if (optionalEmpleado.isPresent()){
+            return true;
+        }
+
+        return false;
+    }
+
+
+
 }

@@ -2,6 +2,7 @@ package com.neoris.turnosrotativos.services.implement;
 
 import com.neoris.turnosrotativos.dtos.ConceptoDTO;
 import com.neoris.turnosrotativos.entities.Concepto;
+import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.BussinessException;
 import com.neoris.turnosrotativos.repositories.ConceptoRepository;
 import com.neoris.turnosrotativos.services.ConceptoService;
@@ -25,7 +26,7 @@ public class ConceptoServiceImplement implements ConceptoService {
         if (concepto.isPresent()){
             return concepto.get();
         } else {
-            throw new BussinessException("El concepto con id: " + id + " no existe.", 404);
+            throw new BussinessException("No se encontro el concepto con id: " + id, 404);
 
         }
     }
@@ -33,5 +34,18 @@ public class ConceptoServiceImplement implements ConceptoService {
     @Override
     public List<Concepto> getConceptos() {
         return (List<Concepto>) conceptoRepository.findAll();
+    }
+
+
+    /* VALIDACIONES */
+
+    public boolean checkConceptoById(Integer id){
+        Optional<Concepto> optionalConcepto = conceptoRepository.findById(id);
+
+        if (optionalConcepto.isPresent()){
+            return true;
+        }
+
+        return false;
     }
 }

@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@Entity(name = "jornada")
+@Entity(name = "jornadas")
 public class Jornada {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,7 +14,6 @@ public class Jornada {
 
     @OneToOne
     @JoinColumn(name = "id_empleado", referencedColumnName = "id")
-
     private Empleado empleado;
 
     @OneToOne
@@ -25,6 +24,49 @@ public class Jornada {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate fecha;
 
-
+    @Column(name = "hs_trabajadas")
     private Integer hsTrabajadas;
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+
+    public void setEmpleadoId(Integer id){
+
+    }
+
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
+
+    public Concepto getConcepto() {
+        return concepto;
+    }
+
+    public void setConcepto(Concepto concepto) {
+        this.concepto = concepto;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public Integer getHsTrabajadas() {
+        return hsTrabajadas;
+    }
+
+    public void setHsTrabajadas(Integer hsTrabajadas) {
+        this.hsTrabajadas = hsTrabajadas;
+    }
 }
