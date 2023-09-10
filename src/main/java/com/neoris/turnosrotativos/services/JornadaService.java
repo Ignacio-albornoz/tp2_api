@@ -12,10 +12,6 @@ public interface JornadaService {
 
     public Jornada addJornada(JornadaRequest jornadaRequest);
 
-    public List<Jornada> getJornadasByNroDocumento(Integer nroDocumento);
-
-    public List<Jornada> getJornadasByFecha(LocalDate fecha);
-
-    public List<Jornada> getJornadasByNroDocumentoAndFecha(Integer nroDocumento, LocalDate fecha);
+    public List<Jornada> getJornadasByFechaAndDocumento(LocalDate fecha, Integer nroDocumento);
 
 }

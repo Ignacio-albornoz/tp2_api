@@ -5,6 +5,7 @@ import com.neoris.turnosrotativos.requests.JornadaRequest;
 import com.neoris.turnosrotativos.responses.JornadaResponse;
 import com.neoris.turnosrotativos.services.implement.JornadaServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,22 +23,21 @@ public class JornadaController {
     @Autowired
     JornadaServiceImplement jornadaServiceImplement;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<List<Jornada>> obtenerJornadas(
-            @RequestParam(required = false) LocalDate fecha,
+    @GetMapping("/")
+    public ResponseEntity<List<JornadaResponse>> obtenerJornadas(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
             @RequestParam(required = false) Integer nroDocumento
     ) {
-        // Llamar al método del servicio que se encarga de filtrar las jornadas según los parámetros
-        List<Jornada> jornadas = jornadaServiceImplement.getJornadasByNroDocumentoAndFecha(nroDocumento, fecha);
+        // Llamar al metodo del servicio que se encarga de filtrar las jornadas segun los parametros
+        List<Jornada> jornadas = jornadaServiceImplement.getJornadasByFechaAndDocumento(fecha, nroDocumento);
+
+        List<JornadaResponse> jornadasResponse = jornadas.stream()
+                .map(jornada -> new JornadaResponse(jornada)) // Aplica el constructor de JornadaResponse a cada jornada
+                .collect(Collectors.toList());
+
+
         // Retornar la lista de jornadas con el código 200
-        return new ResponseEntity<>(jornadas, HttpStatus.OK);
-    }
-
-    @GetMapping("/lista")
-    public List<Jornada> getJornadasCompletas(){
-        List<Jornada> jornadas = jornadaServiceImplement.getJornadas();
-
-        return jornadas;
+        return new ResponseEntity<>(jornadasResponse, HttpStatus.OK);
     }
 
     @GetMapping()

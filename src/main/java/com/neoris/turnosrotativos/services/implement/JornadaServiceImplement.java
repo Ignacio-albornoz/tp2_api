@@ -100,18 +100,20 @@ public class JornadaServiceImplement implements JornadaService {
     }
 
     @Override
-    public List<Jornada> getJornadasByNroDocumento(Integer nroDocumento) {
-        return jornadaRepository.findByEmpleadoNroDocumento(nroDocumento);
-
-    }
-
-    @Override
-    public List<Jornada> getJornadasByFecha(LocalDate fecha) {
-        return jornadaRepository.findByFecha(fecha);
-    }
-
-    @Override
-    public List<Jornada> getJornadasByNroDocumentoAndFecha(Integer nroDocumento, LocalDate fecha) {
+    public List<Jornada> getJornadasByFechaAndDocumento(LocalDate fecha, Integer nroDocumento) {
+        // Si ambos parámetros son nulos, retornar todas las jornadas
+        if (fecha == null && nroDocumento == null) {
+            return (List<Jornada>) jornadaRepository.findAll();
+        }
+        // Si solo el nroDocumento es nulo, retornar las jornadas por fecha
+        if (nroDocumento == null) {
+            return jornadaRepository.findByFecha(fecha);
+        }
+        // Si solo la fecha es nula, retornar las jornadas por nroDocumento
+        if (fecha == null) {
+            return jornadaRepository.findByEmpleadoNroDocumento(nroDocumento);
+        }
+        // Si ambos parámetros son no nulos, retornar las jornadas por fecha y nroDocumento
         return jornadaRepository.findByEmpleadoNroDocumentoAndFecha(nroDocumento, fecha);
     }
 
