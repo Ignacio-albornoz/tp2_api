@@ -1,22 +1,19 @@
 package com.neoris.turnosrotativos.services;
 
+import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
 import com.neoris.turnosrotativos.entities.Empleado;
 
 import java.util.List;
 
 public interface EmpleadoService {
 
-    public Empleado getEmpleadoById(Integer id);
+    public EmpleadoDTO getEmpleadoById(Integer id);
 
-    public Empleado getEmpleadoByEmail(String email);
+    public List<EmpleadoDTO> getEmpleados();
 
-    public Empleado getEmpleadoByNroDocumento(Integer nroDocumento);
+    public EmpleadoDTO addEmpleado(EmpleadoDTO empleadoDTO);
 
-    public List<Empleado> getEmpleados();
-
-    public Empleado addEmpleado(Empleado empleado);
-
-    public Empleado updateEmpleado( Empleado empleado, Integer id);
+    public EmpleadoDTO updateEmpleado(EmpleadoDTO empleadoDTO, Integer id);
 
     public void removeEmpleado(Integer id);
 }

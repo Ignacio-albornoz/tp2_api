@@ -1,19 +1,21 @@
-package com.neoris.turnosrotativos.entities;
+package com.neoris.turnosrotativos.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.neoris.turnosrotativos.entities.Empleado;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
-
-@Entity(name = "empleados")
-public class Empleado {
+@Component
+public class EmpleadoDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,13 +35,11 @@ public class Empleado {
 
     @NotNull(message = "email es obligatorio.")
     @Email(message = "El email ingresado no es correcto.")
-    @Column(unique = true)
     String email;
 
     @NotNull(message = "fechaNacimiento es obligatorio.")
     @PastOrPresent(message = "La fecha de nacimiento no puede ser posterior al día de la fecha.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @Column(name = "fecha_nacimiento")
     LocalDate fechaNacimiento;
 
     @NotNull(message = "fechaIngreso es obligatorio.")
@@ -51,9 +51,35 @@ public class Empleado {
     @NotNull
     @DateTimeFormat (iso = DateTimeFormat.ISO.DATE)
     @Column(name = "fecha_creacion")
-    LocalDate fechaCreacion;
+    LocalDate fechaCreacion = LocalDate.now();
 
+    public EmpleadoDTO(){}
 
+    public EmpleadoDTO(Empleado empleado) {
+        this.id = empleado.getId();
+        this.nroDocumento = empleado.getNroDocumento();
+        this.nombre = empleado.getNombre();
+        this.apellido = empleado.getApellido();
+        this.email = empleado.getEmail();
+        this.fechaNacimiento = empleado.getFechaNacimiento();
+        this.fechaIngreso = empleado.getFechaIngreso();
+    }
+
+    public Empleado toEntity(){
+        Empleado entity = new Empleado();
+
+        entity.setId(this.id);
+        entity.setNroDocumento(this.nroDocumento);
+        entity.setNombre(this.nombre);
+        entity.setApellido(this.apellido);
+        entity.setEmail(this.email);
+        entity.setFechaNacimiento(this.fechaNacimiento);
+        entity.setFechaIngreso(this.fechaIngreso);
+        entity.setFechaCreacion(this.fechaCreacion);
+
+        return entity;
+
+    }
 
     public Integer getId() {
         return id;

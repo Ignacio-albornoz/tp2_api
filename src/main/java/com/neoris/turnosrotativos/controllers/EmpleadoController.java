@@ -1,5 +1,6 @@
 package com.neoris.turnosrotativos.controllers;
 
+import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.services.implement.EmpleadoServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,31 +21,31 @@ public class EmpleadoController {
     EmpleadoServiceImplement empleadoServiceImplement;
 
     @GetMapping()
-    public ResponseEntity<List<Empleado>> getEmpleados(){
-        List<Empleado> empleadoList = empleadoServiceImplement.getEmpleados();
-        return ResponseEntity.ok(empleadoList);
+    public ResponseEntity<List<EmpleadoDTO>> getEmpleados(){
+        List<EmpleadoDTO> empleadoDTOListList = empleadoServiceImplement.getEmpleados();
+        return ResponseEntity.ok(empleadoDTOListList);
     }
 
     @GetMapping("/{empleadoId}")
-    public ResponseEntity<Empleado> getEmpleadosById(@PathVariable("empleadoId") Integer empleadoId){
-        Empleado empleado = empleadoServiceImplement.getEmpleadoById(empleadoId);
-        return ResponseEntity.ok(empleado);
+    public ResponseEntity<EmpleadoDTO> getEmpleadosById(@PathVariable("empleadoId") Integer empleadoId){
+        EmpleadoDTO empleadoDTO = empleadoServiceImplement.getEmpleadoById(empleadoId);
+        return ResponseEntity.ok(empleadoDTO);
     }
 
     @PostMapping()
-    public ResponseEntity<Empleado> addEmpleado(@Valid @RequestBody Empleado empleado) {
-        Empleado empleadoAdded = empleadoServiceImplement.addEmpleado(empleado);
+    public ResponseEntity<EmpleadoDTO> addEmpleado(@Valid @RequestBody EmpleadoDTO empleadoDTO) {
+        EmpleadoDTO empleadoAdded = empleadoServiceImplement.addEmpleado(empleadoDTO);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(HttpHeaders.LOCATION, String.format("/empleado/%d", empleadoAdded.getId()));
 
-        return new ResponseEntity<Empleado>(empleadoAdded, responseHeaders, HttpStatus.CREATED);
+        return new ResponseEntity<EmpleadoDTO>(empleadoAdded, responseHeaders, HttpStatus.CREATED);
     }
 
     @PutMapping("/{empleadoId}")
     public ResponseEntity<Object> updateEmpleado(@PathVariable("empleadoId") Integer empleadoId,
-                                                @Valid @RequestBody Empleado empleado) {
-        Empleado studentMod = empleadoServiceImplement.updateEmpleado(empleado, empleadoId);
-        return ResponseEntity.ok(studentMod);
+                                                @Valid @RequestBody EmpleadoDTO empleadoDTO) {
+        EmpleadoDTO empleadoDTOUpdate = empleadoServiceImplement.updateEmpleado(empleadoDTO, empleadoId);
+        return ResponseEntity.ok(empleadoDTOUpdate);
     }
 
 

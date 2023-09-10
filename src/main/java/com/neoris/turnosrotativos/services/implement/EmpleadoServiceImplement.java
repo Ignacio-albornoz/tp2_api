@@ -1,5 +1,6 @@
 package com.neoris.turnosrotativos.services.implement;
 
+import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.BussinessException;
 import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmpleadoServiceImplement implements EmpleadoService {
@@ -19,99 +21,79 @@ public class EmpleadoServiceImplement implements EmpleadoService {
 
 
     @Override
-    public Empleado getEmpleadoById(Integer id) {
+    public EmpleadoDTO getEmpleadoById(Integer id) {
         Optional<Empleado> empleado = empleadoRepository.findById(id);
 
         if (empleado.isPresent()){
-            return empleado.get();
+            return new EmpleadoDTO(empleado.get());
         } else {
             throw new BussinessException("No se encontro el empleado con id: " + id, 404);
         }
     }
 
-    @Override
-    public Empleado getEmpleadoByEmail(String email) {
-        Optional<Empleado> empleado = empleadoRepository.findByEmail(email);
 
-        if (empleado.isPresent()){
-            return empleado.get();
-        } else {
-            return null;
-        }
+    @Override
+    public List<EmpleadoDTO> getEmpleados(){
+        List<Empleado> empleados = (List<Empleado>) empleadoRepository.findAll();
+        return empleados
+                .stream()
+                .map(EmpleadoDTO::new)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public Empleado getEmpleadoByNroDocumento(Integer nroDocumento) {
-
-        Optional<Empleado> empleado = empleadoRepository.findByNroDocumento(nroDocumento);
-
-        if (empleado.isPresent()){
-            return empleado.get();
-        } else {
-            return null;
-        }
-    }
 
     @Override
-    public List<Empleado> getEmpleados() {
-        return (List<Empleado>) empleadoRepository.findAll();
-    }
+    public EmpleadoDTO addEmpleado(EmpleadoDTO empleadoDTO) {
 
-    @Override
-    public Empleado addEmpleado(Empleado empleado) {
-        Optional<Empleado> empleadoOptionalfindByEmail = empleadoRepository.findByEmail(empleado.getEmail());
+        Optional<Empleado> empleadoOptionalfindByEmail = empleadoRepository.findByEmail(empleadoDTO.getEmail());
 
-        Optional<Empleado> empleadoOptionalfindByNroDocumento = empleadoRepository.findByNroDocumento(empleado.getNroDocumento());
-
-        if (empleadoOptionalfindByEmail.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
-        }
+        Optional<Empleado> empleadoOptionalfindByNroDocumento = empleadoRepository.findByNroDocumento(empleadoDTO.getNroDocumento());
 
         if (empleadoOptionalfindByNroDocumento.isPresent()){
             throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
         }
 
-        //esMayorDeEdad == false, se dispara un Bad request
-        if (!esMayorDeEdad(empleado.getFechaNacimiento())){
-            throw new BussinessException("La edad del empleado no puede ser menor a 18 años.", 400);
-        }
-
-
-        Empleado empleadoAdded = empleadoRepository.save(empleado);
-        return empleadoAdded;
-
-    }
-
-    @Override
-    public Empleado updateEmpleado(Empleado empleado, Integer id) {
-
-        Optional<Empleado> empleadoOptionalFindById = empleadoRepository.findById(id);
-
-        Optional<Empleado> empleadoOptionalfindByEmail = empleadoRepository.findByEmail(empleado.getEmail());
-
-        Optional<Empleado> empleadoOptionalfindByNroDocumento = empleadoRepository.findByNroDocumento(empleado.getNroDocumento());
-
         if (empleadoOptionalfindByEmail.isPresent()){
             throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
         }
 
-        if (empleadoOptionalfindByNroDocumento.isPresent()){
+        //esMayorDeEdad == false, se dispara un Bad request
+        if (!esMayorDeEdad(empleadoDTO.getFechaNacimiento())){
+            throw new BussinessException("La edad del empleado no puede ser menor a 18 años.", 400);
+        }
+
+        Empleado empleadoAdded = empleadoRepository.save(empleadoDTO.toEntity());
+
+        EmpleadoDTO empleadoAddedDTO = new EmpleadoDTO(empleadoAdded);
+
+        return empleadoAddedDTO;
+
+    }
+
+    @Override
+    public EmpleadoDTO updateEmpleado(EmpleadoDTO empleadoDTO, Integer id) {
+
+
+        if (existsEmpleadoWithEmail(empleadoDTO.getEmail())){
+            throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
+        }
+
+        if (existsEmpleadoWithNroDocumento(empleadoDTO.getNroDocumento())){
             throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
         }
 
         //esMayorDeEdad == false, se dispara un Bad request
-        if (!esMayorDeEdad(empleado.getFechaNacimiento())){
+        if (!esMayorDeEdad(empleadoDTO.getFechaNacimiento())){
             throw new BussinessException("La edad del empleado no puede ser menor a 18 años.", 400);
         }
 
-        if (empleadoOptionalFindById.isPresent()){
-
-            Empleado empleadoAdded = empleadoRepository.save(empleado);
-            return empleadoAdded;
+        if (existsEmpleadoWithId(id)){
+            Empleado empleadoAdded = empleadoRepository.save(empleadoDTO.toEntity());
+            EmpleadoDTO empleadoAddedDTO = new EmpleadoDTO(empleadoAdded);
+            return empleadoAddedDTO;
         }
 
         throw new BussinessException("No se encontro el empleado con id: " + id, 404);
-
 
     }
 
@@ -138,30 +120,30 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         return true;
     }
 
-    public boolean checkEmpleadoById(Integer id){
-        Optional<Empleado> optionalEmpleado = empleadoRepository.findById(id);
 
-        if (optionalEmpleado.isPresent()){
+
+    public boolean existsEmpleadoWithId(Integer id){
+
+        if (empleadoRepository.existsById(id)){
+
             return true;
         }
 
         return false;
     }
 
-    private boolean checkEmpleadoByNroDocumento(Integer nroDocumento){
-        Optional<Empleado> optionalEmpleado = empleadoRepository.findByNroDocumento(nroDocumento);
+    private boolean existsEmpleadoWithNroDocumento(Integer nroDocumento){
 
-        if (optionalEmpleado.isPresent()){
+        if (empleadoRepository.existsByNroDocumento(nroDocumento)){
             return true;
         }
 
         return false;
     }
 
-    private boolean checkEmpleadoByEmail(String email){
-        Optional<Empleado> optionalEmpleado = empleadoRepository.findByEmail(email);
+    private boolean existsEmpleadoWithEmail(String email){
 
-        if (optionalEmpleado.isPresent()){
+        if (empleadoRepository.existsByEmail(email)){
             return true;
         }
 

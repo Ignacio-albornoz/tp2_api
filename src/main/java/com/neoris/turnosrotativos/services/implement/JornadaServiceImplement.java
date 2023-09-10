@@ -1,5 +1,6 @@
 package com.neoris.turnosrotativos.services.implement;
 
+import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
 import com.neoris.turnosrotativos.entities.Concepto;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.entities.Jornada;
@@ -26,6 +27,8 @@ public class JornadaServiceImplement implements JornadaService {
     @Autowired
     ConceptoServiceImplement conceptoServiceImplement;
 
+    /*Se declara clase que contiene todas las validaciones de Jornada*/
+    JornadaValidation jornadaValidation = new JornadaValidation();
 
 
     /*@Override
@@ -52,9 +55,7 @@ public class JornadaServiceImplement implements JornadaService {
 
         List<Jornada> todasLasJornadas = (List<Jornada>) jornadaRepository.findAll();
 
-        JornadaValidation jornadaValidation = new JornadaValidation();
-
-        Empleado empleado = empleadoServiceImplement.getEmpleadoById(jornadaRequest.getIdEmpleado());
+        Empleado empleado = empleadoServiceImplement.getEmpleadoById(jornadaRequest.getIdEmpleado()).toEntity();
 
         Concepto concepto = conceptoServiceImplement.getConceptoById(jornadaRequest.getIdConcepto());
 
