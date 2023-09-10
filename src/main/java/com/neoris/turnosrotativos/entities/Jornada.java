@@ -27,6 +27,20 @@ public class Jornada {
     @Column(name = "hs_trabajadas")
     private Integer hsTrabajadas;
 
+    public Jornada(Empleado empleado, Concepto concepto, LocalDate fecha, Integer hsTrabajadas) {
+        this.empleado = empleado;
+        this.concepto = concepto;
+        this.fecha = fecha;
+        if (hsTrabajadas == null){
+            this.hsTrabajadas = 0;
+        }
+        this.hsTrabajadas = hsTrabajadas;
+
+    }
+
+    public Jornada() {
+
+    }
 
     public Integer getId() {
         return id;

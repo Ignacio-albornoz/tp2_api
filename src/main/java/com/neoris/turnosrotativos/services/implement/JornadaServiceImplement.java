@@ -4,16 +4,14 @@ import com.neoris.turnosrotativos.entities.Concepto;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.entities.Jornada;
 import com.neoris.turnosrotativos.exceptions.BussinessException;
-import com.neoris.turnosrotativos.repositories.ConceptoRepository;
-import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
 import com.neoris.turnosrotativos.repositories.JornadaRepository;
 import com.neoris.turnosrotativos.requests.JornadaRequest;
-import com.neoris.turnosrotativos.responses.JornadaResponse;
-import com.neoris.turnosrotativos.services.ConceptoService;
 import com.neoris.turnosrotativos.services.JornadaService;
+import com.neoris.turnosrotativos.validations.JornadaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,8 +21,11 @@ public class JornadaServiceImplement implements JornadaService {
 
     @Autowired
     JornadaRepository jornadaRepository;
-    EmpleadoRepository empleadoRepository;
-    ConceptoRepository conceptoRepository;
+    @Autowired
+    EmpleadoServiceImplement empleadoServiceImplement;
+    @Autowired
+    ConceptoServiceImplement conceptoServiceImplement;
+
 
 
     /*@Override
@@ -48,42 +49,70 @@ public class JornadaServiceImplement implements JornadaService {
 
     @Override
     public Jornada addJornada(JornadaRequest jornadaRequest) {
-        Optional<Empleado> empleado = empleadoRepository.findById(jornadaRequest.getIdEmpleado());
 
-        Optional<Concepto> concepto = conceptoRepository.findById(jornadaRequest.getIdConcepto());
+        List<Jornada> todasLasJornadas = (List<Jornada>) jornadaRepository.findAll();
+
+        JornadaValidation jornadaValidation = new JornadaValidation();
+
+        Empleado empleado = empleadoServiceImplement.getEmpleadoById(jornadaRequest.getIdEmpleado());
+
+        Concepto concepto = conceptoServiceImplement.getConceptoById(jornadaRequest.getIdConcepto());
 
 
-        if (empleado.isEmpty()){
-            throw new BussinessException("El concepto con id: " + " no existe.", 404);
+        Jornada jornada = new Jornada(empleado, concepto, jornadaRequest.getFecha(), jornadaRequest.getHsTrabajadas());
 
+        /* VALIDACIONES */
+
+        Integer idEmpleado = jornada.getEmpleado().getId();
+        Integer idConcepto = jornada.getConcepto().getId();
+        LocalDate fecha = jornada.getFecha();
+        Integer hsTrabajadas = jornada.getHsTrabajadas();
+
+        jornadaValidation.validarHorasDeTrabajoSegunConcepto(jornada.getConcepto().getLaborable(), hsTrabajadas);
+
+        //Se evita lidiar con null en las siguientes validaciones
+        if (hsTrabajadas == null){
+            hsTrabajadas = 0;
         }
 
-        if (concepto.isEmpty()){
-            throw new BussinessException("El concepto con id: " + " no existe.", 404);
+        jornadaValidation.validarRangoDeHoras(hsTrabajadas, jornada.getConcepto().getHsMinimo(), jornada.getConcepto().getHsMaximo());
 
-        }
+        jornadaValidation.validarDiaLibre(todasLasJornadas, jornada.getEmpleado().getId(), jornada.getFecha());
 
-        validarHorasTrabajasSegunConcepto(jornadaRequest.isLaborable(), jornadaRequest.getHorasTrabajadas());
+        jornadaValidation.validarMismoConcepto(todasLasJornadas, idEmpleado, idConcepto, fecha);
 
-        Jornada jornada = new Jornada();
-        jornada.getEmpleado().setId(jornadaRequest.getIdEmpleado());
-        jornada.getConcepto().setId(jornadaRequest.getIdConcepto());
-        jornada.setFecha(jornadaRequest.getFecha());
-        jornada.setHsTrabajadas(jornadaRequest.getHorasTrabajadas());
+        jornadaValidation.validarHorasDia(todasLasJornadas, idEmpleado, fecha, hsTrabajadas);
 
-        Jornada savedJornada = jornadaRepository.save(jornada);
+        jornadaValidation.validarTurnosYDiaLibre(todasLasJornadas, idEmpleado, idConcepto, fecha);
 
-        return savedJornada;
+        jornadaValidation.validarHorasSemana(todasLasJornadas, idEmpleado, fecha, hsTrabajadas);
+
+        jornadaValidation.validarTurnosExtra(todasLasJornadas, idEmpleado, idConcepto, fecha);
+
+        jornadaValidation.validarTurnosNormales(todasLasJornadas, idEmpleado, idConcepto, fecha);
+
+        jornadaValidation.validarDiasLibres(todasLasJornadas, idEmpleado, idConcepto, fecha);
+
+        Jornada jornadaAdded = jornadaRepository.save(jornada);
+
+        return jornadaAdded;
+
     }
 
-    /*Validaciones*/
-
-    private void validarHorasTrabajasSegunConcepto(Boolean laborable, Integer hrsTrabajadas){
-        if (laborable && hrsTrabajadas == null){
-            throw new BussinessException("hsTrabajadas es obligatorio para el concepto ingresado", 400);
-        } else if (!laborable && hrsTrabajadas != null) {
-            throw new BussinessException("El concepto ingresado no requiere el ingreso de hsTrabajadas", 400);
-        }
+    @Override
+    public List<Jornada> getJornadasByNroDocumento(Integer nroDocumento) {
+        return jornadaRepository.findByEmpleadoNroDocumento(nroDocumento);
 
     }
+
+    @Override
+    public List<Jornada> getJornadasByFecha(LocalDate fecha) {
+        return jornadaRepository.findByFecha(fecha);
+    }
+
+    @Override
+    public List<Jornada> getJornadasByNroDocumentoAndFecha(Integer nroDocumento, LocalDate fecha) {
+        return jornadaRepository.findByEmpleadoNroDocumentoAndFecha(nroDocumento, fecha);
+    }
+
 }

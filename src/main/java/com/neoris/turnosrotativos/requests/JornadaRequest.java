@@ -1,36 +1,20 @@
 package com.neoris.turnosrotativos.requests;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import org.springframework.stereotype.Component;
-
-
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-
 public class JornadaRequest {
-    @Id
-    private Integer id;
+
     @NotNull(message = "idEmpleado es obligatorio")
     private Integer idEmpleado;
     @NotNull(message = "idConcepto es obligatorio")
     private Integer idConcepto;
     @NotNull(message = "fecha es obligatoria")
     private LocalDate fecha;
-
-    private Integer horasTrabajadas;
-
+    private Integer hsTrabajadas = 0;
     private boolean laborable;
-
-
-    public JornadaRequest(Integer idEmpleado, Integer idConcepto, LocalDate fecha, Integer horasTrabajadas, boolean laborable) {
-        this.idEmpleado = idEmpleado;
-        this.idConcepto = idConcepto;
-        this.fecha = fecha;
-        this.horasTrabajadas = horasTrabajadas;
-        this.laborable = laborable;
-    }
 
     public Integer getIdEmpleado() {
         return idEmpleado;
@@ -56,12 +40,12 @@ public class JornadaRequest {
         this.fecha = fecha;
     }
 
-    public Integer getHorasTrabajadas() {
-        return horasTrabajadas;
+    public Integer getHsTrabajadas() {
+        return hsTrabajadas;
     }
 
-    public void setHorasTrabajadas(Integer horasTrabajadas) {
-        this.horasTrabajadas = horasTrabajadas;
+    public void setHsTrabajadas(Integer hsTrabajadas) {
+        this.hsTrabajadas = hsTrabajadas;
     }
 
     public boolean isLaborable() {

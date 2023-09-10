@@ -1,18 +1,19 @@
 package com.neoris.turnosrotativos.responses;
 
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.neoris.turnosrotativos.entities.Jornada;
 
-
-import javax.persistence.Id;
 import java.time.LocalDate;
 
 public class JornadaResponse {
-    @Id
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer id;
     private Integer nroDocumento;
     private String nombreCompleto;
     private LocalDate fecha;
     private String concepto;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer hsTrabajadas;
 
 
@@ -22,6 +23,23 @@ public class JornadaResponse {
         this.fecha = fecha;
         this.concepto = concepto;
         this.hsTrabajadas = hsTrabajadas;
+    }
+
+    public JornadaResponse(Jornada jornada){
+        this.id = jornada.getId();
+        this.nroDocumento = jornada.getEmpleado().getNroDocumento();
+        this.nombreCompleto = jornada.getEmpleado().getNombre() + " " + jornada.getEmpleado().getApellido();
+        this.fecha = jornada.getFecha();
+        this.concepto = jornada.getConcepto().getNombre();
+        this.hsTrabajadas = jornada.getHsTrabajadas();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getNroDocumento() {
