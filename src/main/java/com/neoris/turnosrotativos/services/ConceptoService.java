@@ -1,5 +1,6 @@
 package com.neoris.turnosrotativos.services;
 
+import com.neoris.turnosrotativos.dtos.ConceptoDTO;
 import com.neoris.turnosrotativos.entities.Concepto;
 
 import java.util.List;
@@ -7,8 +8,8 @@ import java.util.List;
 
 public interface ConceptoService {
 
-    public Concepto getConceptoById(Integer id);
+    public ConceptoDTO getConceptoById(Integer id);
 
-    public List<Concepto> getConceptos();
+    public List<ConceptoDTO> getConceptos();
 
 }

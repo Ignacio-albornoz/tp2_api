@@ -13,7 +13,6 @@ public class ConceptoDTO {
     private Integer hsMinimo;
     private Integer hsMaximo;
 
-
     public ConceptoDTO(){}
 
     public ConceptoDTO(Concepto concepto) {
@@ -24,11 +23,17 @@ public class ConceptoDTO {
         this.hsMaximo = concepto.getHsMaximo();
     }
 
-    /*public Concepto toEntity(){
+    public Concepto toEntity(){
         Concepto entity = new Concepto();
 
+        entity.setId(this.id);
+        entity.setNombre(this.nombre);
+        entity.setLaborable(this.laborable);
+        entity.setHsMinimo(this.hsMinimo);
+        entity.setHsMaximo(this.hsMaximo);
 
-    }*/
+        return entity;
+    }
 
     public Integer getId() {
         return id;

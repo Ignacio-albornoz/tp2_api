@@ -21,13 +21,13 @@ public class ConceptoController {
     ConceptoServiceImplement conceptoServiceImplement;
 
     @GetMapping()
-    public ResponseEntity<List<Concepto>> getConceptos(){
-        List<Concepto> conceptoList = conceptoServiceImplement.getConceptos();
+    public ResponseEntity<List<ConceptoDTO>> getConceptos(){
+        List<ConceptoDTO> conceptoList = conceptoServiceImplement.getConceptos();
         return ResponseEntity.ok(conceptoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Concepto> getConceptosById(@PathVariable("id") Integer id){
+    public ResponseEntity<ConceptoDTO> getConceptosById(@PathVariable("id") Integer id){
         return ResponseEntity.ok(conceptoServiceImplement.getConceptoById(id));
     }
 }

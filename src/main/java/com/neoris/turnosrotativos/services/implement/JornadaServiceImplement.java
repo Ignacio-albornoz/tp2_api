@@ -57,7 +57,7 @@ public class JornadaServiceImplement implements JornadaService {
 
         Empleado empleado = empleadoServiceImplement.getEmpleadoById(jornadaRequest.getIdEmpleado()).toEntity();
 
-        Concepto concepto = conceptoServiceImplement.getConceptoById(jornadaRequest.getIdConcepto());
+        Concepto concepto = conceptoServiceImplement.getConceptoById(jornadaRequest.getIdConcepto()).toEntity();
 
 
         Jornada jornada = new Jornada(empleado, concepto, jornadaRequest.getFecha(), jornadaRequest.getHsTrabajadas());

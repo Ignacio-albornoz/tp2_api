@@ -1,6 +1,7 @@
 package com.neoris.turnosrotativos.services.implement;
 
 import com.neoris.turnosrotativos.dtos.ConceptoDTO;
+import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
 import com.neoris.turnosrotativos.entities.Concepto;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.BussinessException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ConceptoServiceImplement implements ConceptoService {
@@ -20,11 +22,11 @@ public class ConceptoServiceImplement implements ConceptoService {
     ConceptoRepository conceptoRepository;
 
     @Override
-    public Concepto getConceptoById(Integer id) {
+    public ConceptoDTO getConceptoById(Integer id) {
         Optional<Concepto> concepto = conceptoRepository.findById(id);
 
         if (concepto.isPresent()){
-            return concepto.get();
+            return new ConceptoDTO(concepto.get());
         } else {
             throw new BussinessException("No se encontro el concepto con id: " + id, 404);
 
@@ -32,8 +34,12 @@ public class ConceptoServiceImplement implements ConceptoService {
     }
 
     @Override
-    public List<Concepto> getConceptos() {
-        return (List<Concepto>) conceptoRepository.findAll();
+    public List<ConceptoDTO> getConceptos() {
+
+        List<Concepto> conceptos = (List<Concepto>) conceptoRepository.findAll();
+        return conceptos.stream()
+                .map(ConceptoDTO::new)
+                .collect(Collectors.toList());
     }
 
 
