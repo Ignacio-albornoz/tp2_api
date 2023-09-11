@@ -4,6 +4,7 @@ import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.BussinessException;
 import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
+import com.neoris.turnosrotativos.repositories.JornadaRepository;
 import com.neoris.turnosrotativos.services.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class EmpleadoServiceImplement implements EmpleadoService {
     @Autowired
     EmpleadoRepository empleadoRepository;
+    @Autowired
+    JornadaRepository jornadaRepository;
 
 
     @Override
@@ -99,7 +102,15 @@ public class EmpleadoServiceImplement implements EmpleadoService {
     public void removeEmpleado(Integer id) {
         Optional<Empleado> empleadoOptionalFindById = empleadoRepository.findById(id);
 
+
         if (empleadoOptionalFindById.isPresent()){
+
+            System.out.println(jornadaRepository.existsByEmpleado(empleadoOptionalFindById.get()));
+
+            if (jornadaRepository.existsByEmpleado(empleadoOptionalFindById.get())){
+                throw new BussinessException("El empleado con id: " + id + " tiene jornada/s asociada/s y no se puede eliminar", 409);
+            }
+
             empleadoRepository.delete(empleadoOptionalFindById.get());
             return;
         }
@@ -140,6 +151,7 @@ public class EmpleadoServiceImplement implements EmpleadoService {
     }
 
     private boolean existsEmpleadoWithEmail(String email){
+
 
         if (empleadoRepository.existsByEmail(email)){
             return true;
