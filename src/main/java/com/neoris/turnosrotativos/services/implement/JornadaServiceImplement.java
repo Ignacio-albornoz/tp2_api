@@ -7,6 +7,7 @@ import com.neoris.turnosrotativos.entities.Jornada;
 import com.neoris.turnosrotativos.exceptions.BussinessException;
 import com.neoris.turnosrotativos.repositories.JornadaRepository;
 import com.neoris.turnosrotativos.requests.JornadaRequest;
+import com.neoris.turnosrotativos.responses.JornadaResponse;
 import com.neoris.turnosrotativos.services.JornadaService;
 import com.neoris.turnosrotativos.validations.JornadaValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,14 +45,18 @@ public class JornadaServiceImplement implements JornadaService {
     }*/
 
     @Override
-    public List<Jornada> getJornadas(){
+    public List<JornadaResponse> getJornadas(){
 
-        return (List<Jornada>) jornadaRepository.findAll();
+        List<Jornada> jornadas = (List<Jornada>) jornadaRepository.findAll();
+
+        return jornadas.stream()
+                .map(JornadaResponse::new)
+                .collect(Collectors.toList());
     }
 
 
     @Override
-    public Jornada addJornada(JornadaRequest jornadaRequest) {
+    public JornadaResponse addJornada(JornadaRequest jornadaRequest) {
 
         List<Jornada> todasLasJornadas = (List<Jornada>) jornadaRepository.findAll();
 
@@ -95,8 +100,9 @@ public class JornadaServiceImplement implements JornadaService {
         jornadaValidation.validarDiasLibres(todasLasJornadas, idEmpleado, idConcepto, fecha);
 
         Jornada jornadaAdded = jornadaRepository.save(jornada);
+        JornadaResponse jornadaResponseAdded = new JornadaResponse(jornadaAdded);
 
-        return jornadaAdded;
+        return jornadaResponseAdded;
 
     }
 

@@ -8,10 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Component
@@ -21,29 +19,30 @@ public class EmpleadoDTO {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
 
-    @NotNull(message = "nroDocumento es obligatorio.")
+    @Max(value = 99999999, message = "El nroDocumento ingresado es incorrecto.")
+    @NotNull(message = "NroDocumento es obligatorio.")
     @Column(unique = true, name = "nro_documento")
     Integer nroDocumento;
 
-    @NotNull(message = "nombre es obligatorio.")
+    @NotNull(message = "Nombre es obligatorio.")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Solo se permiten letras en el campo nombre")
     String nombre;
 
-    @NotNull(message = "apellido es obligatorio.")
+    @NotNull(message = "Apellido es obligatorio.")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Solo se permiten letras en el campo apellido")
     String apellido;
 
-    @NotNull(message = "email es obligatorio.")
+    @NotNull(message = "Email es obligatorio.")
     @Email(message = "El email ingresado no es correcto.")
     String email;
 
-    @NotNull(message = "fechaNacimiento es obligatorio.")
-    @PastOrPresent(message = "La fecha de nacimiento no puede ser posterior al día de la fecha.")
+    @NotNull(message = "FechaNacimiento es obligatorio.")
+    @PastOrPresent(message = "Fecha de nacimiento no puede ser posterior al día de la fecha.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     LocalDate fechaNacimiento;
 
-    @NotNull(message = "fechaIngreso es obligatorio.")
-    @PastOrPresent(message = "La fecha de ingreso no puede ser posterior al día de la fecha.")
+    @NotNull(message = "FechaIngreso es obligatorio.")
+    @PastOrPresent(message = "Fecha de ingreso no puede ser posterior al día de la fecha.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Column(name = "fecha_ingreso")
     LocalDate fechaIngreso;
@@ -52,6 +51,8 @@ public class EmpleadoDTO {
     @DateTimeFormat (iso = DateTimeFormat.ISO.DATE)
     @Column(name = "fecha_creacion")
     LocalDate fechaCreacion = LocalDate.now();
+
+    /* Constructors */
 
     public EmpleadoDTO(){}
 
@@ -64,6 +65,8 @@ public class EmpleadoDTO {
         this.fechaNacimiento = empleado.getFechaNacimiento();
         this.fechaIngreso = empleado.getFechaIngreso();
     }
+
+    /* To Entity */
 
     public Empleado toEntity(){
         Empleado entity = new Empleado();
@@ -80,6 +83,8 @@ public class EmpleadoDTO {
         return entity;
 
     }
+
+    /* Getters & Setters */
 
     public Integer getId() {
         return id;

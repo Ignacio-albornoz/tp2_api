@@ -17,14 +17,6 @@ public class JornadaResponse {
     private Integer hsTrabajadas;
 
 
-    public JornadaResponse(Integer nroDocumento, String nombreCompleto, LocalDate fecha, String concepto, Integer hsTrabajadas) {
-        this.nroDocumento = nroDocumento;
-        this.nombreCompleto = nombreCompleto;
-        this.fecha = fecha;
-        this.concepto = concepto;
-        this.hsTrabajadas = hsTrabajadas;
-    }
-
     public JornadaResponse(Jornada jornada){
         this.id = jornada.getId();
         this.nroDocumento = jornada.getEmpleado().getNroDocumento();

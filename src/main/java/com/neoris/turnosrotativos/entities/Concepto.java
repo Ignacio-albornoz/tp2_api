@@ -12,9 +12,9 @@ public class Concepto {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String nombre;
+    private Boolean laborable;
     private Integer hsMinimo;
     private Integer hsMaximo;
-    private Boolean laborable;
 
     public Integer getId() {
         return id;

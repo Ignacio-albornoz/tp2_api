@@ -45,22 +45,19 @@ public class EmpleadoServiceImplement implements EmpleadoService {
     @Override
     public EmpleadoDTO addEmpleado(EmpleadoDTO empleadoDTO) {
 
-        Optional<Empleado> empleadoOptionalfindByEmail = empleadoRepository.findByEmail(empleadoDTO.getEmail());
-
-        Optional<Empleado> empleadoOptionalfindByNroDocumento = empleadoRepository.findByNroDocumento(empleadoDTO.getNroDocumento());
-
-        if (empleadoOptionalfindByNroDocumento.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
+        if (existsEmpleadoWithEmail(empleadoDTO.getEmail())){
+            throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
         }
 
-        if (empleadoOptionalfindByEmail.isPresent()){
-            throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
+        if (existsEmpleadoWithNroDocumento(empleadoDTO.getNroDocumento())){
+            throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
         }
 
         //esMayorDeEdad == false, se dispara un Bad request
         if (!esMayorDeEdad(empleadoDTO.getFechaNacimiento())){
             throw new BussinessException("La edad del empleado no puede ser menor a 18 años.", 400);
         }
+
 
         Empleado empleadoAdded = empleadoRepository.save(empleadoDTO.toEntity());
 
@@ -88,6 +85,7 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         }
 
         if (existsEmpleadoWithId(id)){
+            empleadoDTO.setId(id);
             Empleado empleadoAdded = empleadoRepository.save(empleadoDTO.toEntity());
             EmpleadoDTO empleadoAddedDTO = new EmpleadoDTO(empleadoAdded);
             return empleadoAddedDTO;

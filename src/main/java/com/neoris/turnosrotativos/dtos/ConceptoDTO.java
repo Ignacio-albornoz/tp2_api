@@ -9,9 +9,11 @@ import javax.persistence.Id;
 public class ConceptoDTO {
     private Integer id;
     private String nombre;
-    private Boolean laborable;
     private Integer hsMinimo;
     private Integer hsMaximo;
+    private Boolean laborable;
+
+    /* Constructors */
 
     public ConceptoDTO(){}
 
@@ -22,6 +24,8 @@ public class ConceptoDTO {
         this.hsMinimo = concepto.getHsMinimo();
         this.hsMaximo = concepto.getHsMaximo();
     }
+
+    /* To Entity */
 
     public Concepto toEntity(){
         Concepto entity = new Concepto();
@@ -34,6 +38,8 @@ public class ConceptoDTO {
 
         return entity;
     }
+
+    /* Getters & Setters */
 
     public Integer getId() {
         return id;

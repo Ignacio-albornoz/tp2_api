@@ -23,7 +23,7 @@ public class JornadaController {
     @Autowired
     JornadaServiceImplement jornadaServiceImplement;
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<JornadaResponse>> obtenerJornadas(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
             @RequestParam(required = false) Integer nroDocumento
@@ -40,27 +40,18 @@ public class JornadaController {
         return new ResponseEntity<>(jornadasResponse, HttpStatus.OK);
     }
 
-    @GetMapping()
+/*    @GetMapping()
     public ResponseEntity<List<JornadaResponse>> getJornadas() {
-        List<JornadaResponse> jornadas = jornadaServiceImplement.getJornadas().stream()
-                .map(jornada -> new JornadaResponse(
-                        jornada.getEmpleado().getNroDocumento(),
-                        jornada.getEmpleado().getNombre() + " " + jornada.getEmpleado().getApellido(),
-                        jornada.getFecha(),
-                        jornada.getConcepto().getNombre(),
-                        jornada.getHsTrabajadas()
-                ))
-                .collect(Collectors.toList());
+        List<JornadaResponse> jornadas = jornadaServiceImplement.getJornadas();
         return ResponseEntity.ok(jornadas);
-    }
+    }*/
 
     @PostMapping()
     public ResponseEntity<JornadaResponse> addJornada(@Valid @RequestBody JornadaRequest jornadaRequest) {
 
-        Jornada jornadaAdded = jornadaServiceImplement.addJornada(jornadaRequest);
-        JornadaResponse jornadaResponse = new JornadaResponse(jornadaAdded);
+        JornadaResponse jornadaResponse = jornadaServiceImplement.addJornada(jornadaRequest);
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(HttpHeaders.LOCATION, String.format("/jornada/%d", jornadaAdded.getId()));
+        responseHeaders.set(HttpHeaders.LOCATION, String.format("/jornada/%d", jornadaResponse.getId()));
 
         return new ResponseEntity<JornadaResponse>(jornadaResponse, responseHeaders, HttpStatus.CREATED);
 
