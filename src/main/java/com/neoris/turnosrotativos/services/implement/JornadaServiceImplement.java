@@ -32,18 +32,6 @@ public class JornadaServiceImplement implements JornadaService {
     JornadaValidation jornadaValidation = new JornadaValidation();
 
 
-    /*@Override
-    public Jornada getJornadatoById(Integer id) {
-        Optional<Jornada> jornada = jornadaRepository.findById(id);
-
-        if (jornada.isPresent()){
-            return jornada.get();
-        } else {
-            throw new BussinessException("El concepto con id: " + id + " no existe.", 404);
-
-        }
-    }*/
-
     @Override
     public List<JornadaResponse> getJornadas(){
 
@@ -64,7 +52,6 @@ public class JornadaServiceImplement implements JornadaService {
 
         Concepto concepto = conceptoServiceImplement.getConceptoById(jornadaRequest.getIdConcepto()).toEntity();
 
-
         Jornada jornada = new Jornada(empleado, concepto, jornadaRequest.getFecha(), jornadaRequest.getHsTrabajadas());
 
         /* VALIDACIONES */
@@ -75,11 +62,6 @@ public class JornadaServiceImplement implements JornadaService {
         Integer hsTrabajadas = jornada.getHsTrabajadas();
 
         jornadaValidation.validarHorasDeTrabajoSegunConcepto(jornada.getConcepto().getLaborable(), hsTrabajadas);
-
-        //Se evita lidiar con null en las siguientes validaciones
-        if (hsTrabajadas == null){
-            hsTrabajadas = 0;
-        }
 
         jornadaValidation.validarRangoDeHoras(hsTrabajadas,
                 jornada.getConcepto().getHsMinimo(),
@@ -111,15 +93,15 @@ public class JornadaServiceImplement implements JornadaService {
 
     @Override
     public List<Jornada> getJornadasByFechaAndDocumento(LocalDate fecha, Integer nroDocumento) {
-        // Si ambos parámetros son nulos, retornar todas las jornadas
+        //Si ambos parametros son nulos, retornar todas las jornadas
         if (fecha == null && nroDocumento == null) {
             return (List<Jornada>) jornadaRepository.findAll();
         }
-        // Si solo el nroDocumento es nulo, retornar las jornadas por fecha
+        //Si solo el nroDocumento es nulo, retornar las jornadas por fecha
         if (nroDocumento == null) {
             return jornadaRepository.findByFecha(fecha);
         }
-        // Si solo la fecha es nula, retornar las jornadas por nroDocumento
+        //Si solo la fecha es nula, retornar las jornadas por nroDocumento
         if (fecha == null) {
             return jornadaRepository.findByEmpleadoNroDocumento(nroDocumento);
         }

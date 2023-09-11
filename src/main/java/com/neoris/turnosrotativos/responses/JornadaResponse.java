@@ -16,6 +16,7 @@ public class JornadaResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer hsTrabajadas;
 
+    /* Constructors */
 
     public JornadaResponse(Jornada jornada){
         this.id = jornada.getId();
@@ -25,6 +26,8 @@ public class JornadaResponse {
         this.concepto = jornada.getConcepto().getNombre();
         this.hsTrabajadas = jornada.getHsTrabajadas();
     }
+
+    /* Getters & Setters */
 
     public Integer getId() {
         return id;

@@ -17,16 +17,19 @@ public class JornadaValidation {
     final Integer ID_CONCEPTO_TURNO_EXTRA = 2;
     final Integer ID_CONCEPTO_DIA_LIBRE = 3;
 
+    final Integer NUMERO_MAXIMO_DE_TURNOS_NORMALES_POR_SEMANA = 5;
     final Integer NUMERO_MAXIMO_DE_TURNOS_EXTRAS_POR_SEMANA = 3;
     final Integer NUMERO_MAXIMO_DE_DIAS_LIBRES_POR_SEMANA = 2;
+
+    final Integer MAXIMO_DE_HORAS_TRABAJADAS_EN_UNA_SEMANA = 48;
 
 
     public void validarHorasDeTrabajoSegunConcepto(Boolean laborable, Integer hrsTrabajadas){
 
-        if (laborable && hrsTrabajadas <= 0 && hrsTrabajadas == null){
+        if (laborable && hrsTrabajadas == 0){
             throw new BussinessException("hsTrabajadas es obligatorio para el concepto ingresado", 400);
-        } else if (!laborable && hrsTrabajadas > 0) {
-            throw new BussinessException("El concepto ingresado no requiere el ingreso de hsTrabajadas", 400);
+        } else if (!laborable && hrsTrabajadas != 0) {
+            throw new BussinessException("El concepto no requiere el ingreso de hsTrabajadas", 400);
         }
 
     }
@@ -34,6 +37,7 @@ public class JornadaValidation {
 
     //Validar que las horas trabajadas esten dentro del rango del concepto
     public void validarRangoDeHoras(Integer hsTrabajadas, Integer hsMinimo, Integer hsMaximo, Boolean laborable){
+
         if (!laborable){
             return;
         }
@@ -74,7 +78,7 @@ public class JornadaValidation {
         }
     }
 
-    //Validar que el empleado no supere las 12 horas trabajadas en un día
+    //Validar que el empleado no supere las 12 horas trabajadas en un dia
     public void validarHorasDia(List<Jornada> todasLasJornadas, Integer idEmpleado,LocalDate fecha, Integer hsTrabajadas){
 
         if (hsTrabajadas == null){
@@ -95,7 +99,7 @@ public class JornadaValidation {
         }
     }
 
-    //Validar que el empleado no cargue un día libre si tiene otros turnos cargados
+    //Validar que el empleado no cargue un dia libre si tiene otros turnos cargados
     public void validarTurnosYDiaLibre(List<Jornada> todasLasJornadas, Integer idEmpleado, Integer idConcepto, LocalDate fecha){
 
         List<Jornada> jornadasMismoDia = todasLasJornadas
@@ -125,7 +129,7 @@ public class JornadaValidation {
 
         for (Jornada j : jornadasMismaSemana) { totalHorasSemana += j.getHsTrabajadas(); }
 
-        if (totalHorasSemana > 48) {
+        if (totalHorasSemana > MAXIMO_DE_HORAS_TRABAJADAS_EN_UNA_SEMANA) {
             throw new BussinessException("El empleado ingresado supera las 48 horas semanales.", 400);
         }
     }
@@ -157,7 +161,7 @@ public class JornadaValidation {
                         && j.getFecha().isBefore(fecha.with(DayOfWeek.SUNDAY)))
                 .collect(Collectors.toList());
 
-        if (idConcepto.equals(ID_CONCEPTO_TURNO_NORMAL) && jornadasTurnoNormal.size() >= 5) {
+        if (idConcepto.equals(ID_CONCEPTO_TURNO_NORMAL) && jornadasTurnoNormal.size() >= NUMERO_MAXIMO_DE_TURNOS_NORMALES_POR_SEMANA) {
             throw new BussinessException("El empleado ingresado ya cuenta con 5 turnos normales esta semana.", 400);
         }
 

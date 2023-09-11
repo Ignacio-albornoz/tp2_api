@@ -1,6 +1,5 @@
 package com.neoris.turnosrotativos.exceptions;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
 
 public class BussinessException extends RuntimeException{
 

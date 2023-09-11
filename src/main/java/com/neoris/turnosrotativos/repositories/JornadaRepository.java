@@ -9,6 +9,7 @@ import java.util.List;
 
 
 public interface JornadaRepository extends CrudRepository<Jornada, Integer> {
+
     public List<Jornada> findByEmpleadoNroDocumento(Integer nroDocumento);
 
     public List<Jornada> findByFecha(LocalDate fecha);

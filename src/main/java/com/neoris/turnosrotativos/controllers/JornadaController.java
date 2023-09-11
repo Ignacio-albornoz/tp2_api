@@ -28,23 +28,14 @@ public class JornadaController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
             @RequestParam(required = false) Integer nroDocumento
     ) {
-        // Llamar al metodo del servicio que se encarga de filtrar las jornadas segun los parametros
         List<Jornada> jornadas = jornadaServiceImplement.getJornadasByFechaAndDocumento(fecha, nroDocumento);
 
         List<JornadaResponse> jornadasResponse = jornadas.stream()
                 .map(jornada -> new JornadaResponse(jornada)) // Aplica el constructor de JornadaResponse a cada jornada
                 .collect(Collectors.toList());
 
-
-        // Retornar la lista de jornadas con el código 200
         return new ResponseEntity<>(jornadasResponse, HttpStatus.OK);
     }
-
-/*    @GetMapping()
-    public ResponseEntity<List<JornadaResponse>> getJornadas() {
-        List<JornadaResponse> jornadas = jornadaServiceImplement.getJornadas();
-        return ResponseEntity.ok(jornadas);
-    }*/
 
     @PostMapping()
     public ResponseEntity<JornadaResponse> addJornada(@Valid @RequestBody JornadaRequest jornadaRequest) {

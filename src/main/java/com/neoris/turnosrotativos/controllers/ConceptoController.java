@@ -1,8 +1,6 @@
 package com.neoris.turnosrotativos.controllers;
 
 import com.neoris.turnosrotativos.dtos.ConceptoDTO;
-import com.neoris.turnosrotativos.entities.Concepto;
-import com.neoris.turnosrotativos.services.ConceptoService;
 import com.neoris.turnosrotativos.services.implement.ConceptoServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

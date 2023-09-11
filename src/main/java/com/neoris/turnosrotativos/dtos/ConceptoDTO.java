@@ -3,7 +3,6 @@ package com.neoris.turnosrotativos.dtos;
 import com.neoris.turnosrotativos.entities.Concepto;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Id;
 
 @Component
 public class ConceptoDTO {

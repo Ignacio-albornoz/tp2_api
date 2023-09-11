@@ -1,7 +1,6 @@
 package com.neoris.turnosrotativos.controllers;
 
 import com.neoris.turnosrotativos.dtos.EmpleadoDTO;
-import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.services.implement.EmpleadoServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/empleado")
@@ -27,10 +25,17 @@ public class EmpleadoController {
     }
 
     @GetMapping("/{empleadoId}")
-    public ResponseEntity<EmpleadoDTO> getEmpleadosById(@PathVariable("empleadoId") Integer empleadoId){
-        EmpleadoDTO empleadoDTO = empleadoServiceImplement.getEmpleadoById(empleadoId);
-        return ResponseEntity.ok(empleadoDTO);
+    public ResponseEntity<Object> getEmpleadosById(@PathVariable("empleadoId") String empleadoId){
+        try {
+            Integer id = Integer.parseInt(empleadoId);
+            EmpleadoDTO empleadoDTO = empleadoServiceImplement.getEmpleadoById(id);
+            return ResponseEntity.ok(empleadoDTO);
+        } catch (NumberFormatException e) {
+            // si el String no es un entero valido
+            return ResponseEntity.badRequest().body("No se ingreso un id valido - Bad Request"); // devuelve una respuesta de error
+        }
     }
+
 
     @PostMapping()
     public ResponseEntity<EmpleadoDTO> addEmpleado(@Valid @RequestBody EmpleadoDTO empleadoDTO) {

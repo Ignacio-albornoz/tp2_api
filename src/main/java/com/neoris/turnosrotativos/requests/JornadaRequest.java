@@ -16,6 +16,8 @@ public class JornadaRequest {
     private Integer hsTrabajadas = 0;
     private boolean laborable;
 
+    /* Getters & Setters */
+
     public Integer getIdEmpleado() {
         return idEmpleado;
     }

@@ -42,16 +42,4 @@ public class ConceptoServiceImplement implements ConceptoService {
                 .collect(Collectors.toList());
     }
 
-
-    /* VALIDACIONES */
-
-    public boolean checkConceptoById(Integer id){
-        Optional<Concepto> optionalConcepto = conceptoRepository.findById(id);
-
-        if (optionalConcepto.isPresent()){
-            return true;
-        }
-
-        return false;
-    }
 }
