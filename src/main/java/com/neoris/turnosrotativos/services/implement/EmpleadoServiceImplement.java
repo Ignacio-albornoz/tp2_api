@@ -108,7 +108,7 @@ public class EmpleadoServiceImplement implements EmpleadoService {
             System.out.println(jornadaRepository.existsByEmpleado(empleadoOptionalFindById.get()));
 
             if (jornadaRepository.existsByEmpleado(empleadoOptionalFindById.get())){
-                throw new BussinessException("El empleado con id: " + id + " tiene jornada/s asociada/s y no se puede eliminar", 409);
+                throw new BussinessException("El empleado con id: " + id + " tiene una jornada asociada y no se puede eliminar", 409);
             }
 
             empleadoRepository.delete(empleadoOptionalFindById.get());

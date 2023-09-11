@@ -33,8 +33,8 @@ public class JornadaValidation {
 
 
     //Validar que las horas trabajadas esten dentro del rango del concepto
-    public void validarRangoDeHoras(Integer hsTrabajadas, Integer hsMinimo, Integer hsMaximo){
-        if (hsTrabajadas == 0){
+    public void validarRangoDeHoras(Integer hsTrabajadas, Integer hsMinimo, Integer hsMaximo, Boolean laborable){
+        if (!laborable){
             return;
         }
 

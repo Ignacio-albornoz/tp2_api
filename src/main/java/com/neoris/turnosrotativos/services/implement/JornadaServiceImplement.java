@@ -81,7 +81,10 @@ public class JornadaServiceImplement implements JornadaService {
             hsTrabajadas = 0;
         }
 
-        jornadaValidation.validarRangoDeHoras(hsTrabajadas, jornada.getConcepto().getHsMinimo(), jornada.getConcepto().getHsMaximo());
+        jornadaValidation.validarRangoDeHoras(hsTrabajadas,
+                jornada.getConcepto().getHsMinimo(),
+                jornada.getConcepto().getHsMaximo(),
+                jornada.getConcepto().getLaborable());
 
         jornadaValidation.validarDiaLibre(todasLasJornadas, jornada.getEmpleado().getId(), jornada.getFecha());
 
