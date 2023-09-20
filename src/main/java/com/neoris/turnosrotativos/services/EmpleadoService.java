@@ -15,4 +15,8 @@ public interface EmpleadoService {
     public EmpleadoDTO updateEmpleado(EmpleadoDTO empleadoDTO, Integer id);
 
     public void removeEmpleado(Integer id);
+
+    public Boolean existsByNroDocumento(Integer nroDocumento);
+
+    public Boolean existsByEmail(String email);
 }

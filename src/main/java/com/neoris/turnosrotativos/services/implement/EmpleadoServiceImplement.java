@@ -118,6 +118,24 @@ public class EmpleadoServiceImplement implements EmpleadoService {
         throw new BussinessException("Empleado no encontrado", 404);
     }
 
+    @Override
+    public Boolean existsByNroDocumento(Integer nroDocumento) {
+        if (empleadoRepository.existsByNroDocumento(nroDocumento)){
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        if (empleadoRepository.existsByEmail(email)){
+            return true;
+        }
+
+        return false;
+    }
+
     /* VALIDACIONES */
 
     private boolean esMayorDeEdad (LocalDate fechaNacimiento) {

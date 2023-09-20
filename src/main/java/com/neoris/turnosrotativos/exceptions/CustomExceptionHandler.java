@@ -23,14 +23,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("Status Code", status.value());
+        responseBody.put("isSuccess", false);
 
         List<String> menssageErrors = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        responseBody.put("Mensaje", menssageErrors);
+        responseBody.put("message", menssageErrors);
 
         return new ResponseEntity<>(responseBody, headers, status);
     }
@@ -42,22 +42,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> responseBody = new LinkedHashMap<>();
         switch (ex.getStatus()){
             case 409:
-                responseBody.put("Status Code", ex.getStatus());
-                responseBody.put("Mensaje", ex.getMessage());
+                responseBody.put("isSuccess", false);
+                responseBody.put("message", ex.getMessage());
                 return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
             case 400:
-                responseBody.put("Status Code", ex.getStatus());
-                responseBody.put("Mensaje", ex.getMessage());
+                responseBody.put("isSuccess", false);
+                responseBody.put("message", ex.getMessage());
                 return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
 
             case 404:
-                responseBody.put("Status Code", ex.getStatus());
-                responseBody.put("Mensaje", ex.getMessage());
+                responseBody.put("isSuccess", false);
+                responseBody.put("message", ex.getMessage());
                 return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
 
             default:
-                responseBody.put("Status Code", 500);
-                responseBody.put("Mensaje", "Ocurrio un error inesperado.");
+                responseBody.put("isSuccess", false);
+                responseBody.put("message", "Ocurrio un error inesperado.");
                 return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
 
 

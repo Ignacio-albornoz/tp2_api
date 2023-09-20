@@ -16,7 +16,10 @@ public interface JornadaRepository extends CrudRepository<Jornada, Integer> {
 
     public List<Jornada> findByEmpleadoNroDocumentoAndFecha(Integer nroDocumento, LocalDate fecha);
 
-    Boolean existsByEmpleado(Empleado empleado);
+    public Boolean existsByEmpleado(Empleado empleado);
+
+    public Boolean existsByEmpleadoNroDocumento(Integer nroDocumento);
+
 }
 
 

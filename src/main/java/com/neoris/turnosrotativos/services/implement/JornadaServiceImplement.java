@@ -109,4 +109,13 @@ public class JornadaServiceImplement implements JornadaService {
         return jornadaRepository.findByEmpleadoNroDocumentoAndFecha(nroDocumento, fecha);
     }
 
+    @Override
+    public Boolean existsByEmpleadoNroDocumento(Integer nroDocumento) {
+        if (jornadaRepository.existsByEmpleadoNroDocumento(nroDocumento)){
+            return true;
+        }
+
+        return false;
+    }
+
 }

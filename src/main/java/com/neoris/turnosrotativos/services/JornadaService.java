@@ -15,4 +15,6 @@ public interface JornadaService {
 
     public List<Jornada> getJornadasByFechaAndDocumento(LocalDate fecha, Integer nroDocumento);
 
+    public Boolean existsByEmpleadoNroDocumento(Integer nroDocumento);
+
 }
