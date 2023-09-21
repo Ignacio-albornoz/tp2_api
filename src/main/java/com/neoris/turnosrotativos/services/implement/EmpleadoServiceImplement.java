@@ -74,13 +74,13 @@ public class EmpleadoServiceImplement implements EmpleadoService {
     public EmpleadoDTO updateEmpleado(EmpleadoDTO empleadoDTO, Integer id) {
 
 
-        if (existsEmpleadoWithEmail(empleadoDTO.getEmail())){
+        /*if (existsEmpleadoWithEmail(empleadoDTO.getEmail())){
             throw new BussinessException("Ya existe un empleado con el email ingresado", 409);
         }
 
         if (existsEmpleadoWithNroDocumento(empleadoDTO.getNroDocumento())){
             throw new BussinessException("Ya existe un empleado con el documento ingresado", 409);
-        }
+        }*/
 
         //esMayorDeEdad == false, se dispara un Bad request
         if (!esMayorDeEdad(empleadoDTO.getFechaNacimiento())){

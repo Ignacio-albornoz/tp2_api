@@ -106,7 +106,6 @@ public class EmpleadoController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/exists/{email}")
     public ResponseEntity<Object> existsByEmail(@PathVariable("email") String email){
         try {
